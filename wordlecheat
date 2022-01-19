@@ -1,0 +1,30 @@
+#/bin/bash
+DICT=/usr/share/dict/words
+pattern=$1
+withletters=$2
+withoutletters=$3
+
+if [ -z "$pattern" ]
+then
+    echo -n "Enter the pattern that you already have for exact matches using a '.' for letters you don't have:"
+    read pattern
+fi
+[ ! -z "$pattern" ] && patterngrep=" | grep -i '$pattern' " || patterngrep=""
+
+if [ -z "$withletters" ]
+then
+    echo -n "Enter any letters that you have in the wrong place (no delimiter, ie 'abc'):"
+    read withletters
+fi
+[ ! -z "$withletters" ] && withgrep=" | grep -i '[$withletters]' " || withgrep=""
+
+if [ -z "$withoutletters" ]
+then
+    echo -n "Enter any letters that are not in the word (no delimter, ie 'xyz'):"
+    read withoutletters
+fi
+[ ! -z "$withoutletters" ] && withoutgrep=" | grep -v '[$withoutletters]' " || withoutgrep=""
+
+cmd="grep -h '^[a-z][a-z][a-z][a-z][a-z]$' $DICT $patterngrep $withgrep $withoutgrep"
+echo "# Command: $cmd"
+eval $cmd
